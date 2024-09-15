@@ -70,14 +70,16 @@ NO_DATA_VAL = {
 # }
 
 # Only Optical Modalities
-BASELINE_MODALITIES = {
+BASELINE_MODALITIES_IN = {
     "sentinel2": [
         "B2",
         "B3",
         "B4",
     ],
 }
-
+BASELINE_MODALITIES_OUT = {
+    "esa_worldcover": "all",
+}
 # Output modalities for training
 OUT_MODALITIES = {
     "sentinel2": [

@@ -21,7 +21,7 @@ except ImportError:
 import torch
 from torch.utils.data import Dataset
 
-import MODALITIES
+from geolayer_modalities.MODALITIES import MODALITIES_FULL, BASELINE_MODALITIES_IN, BASELINE_MODALITIES_OUT, MODALITY_TASK, NO_DATA_VAL
 
 
 ##################### FUNCTIONS FOR PRETRAINING DATASETS #####################
@@ -109,7 +109,7 @@ class MMEarthDataset(Dataset):
             if modality == "dynamic_world":
                 # the labels of dynamic world are 0, 1, 2, 3, 4, 5, 6, 7, 8, 9. We convert them to 0, 1, 2, 3, 4, 5, 6, 7, 8, nan respectively.
                 # originally when downloading the no data values are 0. hence we remap them to nan.
-                data = np.where(data == MODALITIES.NO_DATA_VAL[modality], np.nan, data)
+                data = np.where(data == NO_DATA_VAL[modality], np.nan, data)
                 old_values = [1, 2, 3, 4, 5, 6, 7, 8, 9, np.nan]
                 new_values = [0, 1, 2, 3, 4, 5, 6, 7, 8, np.nan]
                 for old, new in zip(old_values, new_values):
@@ -128,12 +128,12 @@ class MMEarthDataset(Dataset):
 
             # converting the nodata values to nan to keep everything consistent
             data = (
-                np.where(data == MODALITIES.NO_DATA_VAL[modality], np.nan, data)
+                np.where(data == NO_DATA_VAL[modality], np.nan, data)
                 if modality != "dynamic_world"
                 else data
             )
 
-            if MODALITIES.MODALITY_TASK[modality] in ["classification", "segmentation"]:
+            if MODALITY_TASK[modality] in ["classification", "segmentation"]:
                 # remap nan values to -1
                 data = np.where(np.isnan(data), -1, data)
                 data = data.astype(np.dtype("int64"))
@@ -172,7 +172,7 @@ def create_MMEearth_args(data_root: Path, modalities: dict) -> Namespace:
         args.band_stats = json.load(f)
     args.data_name = data_root.name
     args.modalities = modalities
-    args.modalities_full = MODALITIES.MODALITIES_FULL
+    args.modalities_full = MODALITIES_FULL
     return args
 
 
